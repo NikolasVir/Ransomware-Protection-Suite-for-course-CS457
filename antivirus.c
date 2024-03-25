@@ -146,7 +146,6 @@ int main(int argc, char *argv[])
         extract_from_files();
         break;
     case MONITOR:
-        printf("MONITOR\n");
         init_monitoring(file_table_size, file_table);
         break;
     }

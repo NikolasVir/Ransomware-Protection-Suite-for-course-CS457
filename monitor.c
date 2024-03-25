@@ -44,11 +44,18 @@ static void handle_events(int fd, int *wd, int argc, char *argv[])
 
             if (event->mask & IN_OPEN)
                 printf("IN_OPEN: ");
-            if (event->mask & IN_CLOSE_NOWRITE)
-                printf("IN_CLOSE_NOWRITE: ");
+            if (event->mask & IN_ACCESS)
+                printf("IN_ACCESS: ");
+            if (event->mask & IN_CREATE)
+                printf("IN_CREATE: ");
+            if (event->mask & IN_MODIFY)
+                printf("IN_MODIFY: ");
             if (event->mask & IN_CLOSE_WRITE)
                 printf("IN_CLOSE_WRITE: ");
-
+            if (event->mask & IN_CLOSE_NOWRITE)
+                printf("IN_CLOSE_NOWRITE: ");
+            if (event->mask & IN_DELETE_SELF)
+                printf("IN_DELETE_SELF: ");
             /* Print the name of the watched directory. */
 
             for (size_t i = 1; i < argc; ++i)
@@ -83,12 +90,6 @@ int init_monitoring(int argc, char *argv[])
     nfds_t nfds;
     struct pollfd fds[2];
 
-    if (argc < 2)
-    {
-        printf("Usage: %s PATH [PATH ...]\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
     printf("Press ENTER key to terminate.\n");
 
     /* Create the file descriptor for accessing the inotify API. */
@@ -116,7 +117,7 @@ int init_monitoring(int argc, char *argv[])
     for (i = 0; i < argc; i++)
     {
         wd[i] = inotify_add_watch(fd, argv[i],
-                                  IN_OPEN | IN_CLOSE);
+                                  IN_OPEN | IN_ACCESS | IN_CREATE | IN_MODIFY | IN_CLOSE | IN_DELETE_SELF);
         if (wd[i] == -1)
         {
             fprintf(stderr, "Cannot watch '%s': %s\n",
