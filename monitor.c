@@ -1,5 +1,4 @@
-static void
-handle_events(int fd, int *wd, int argc, char *argv[])
+static void handle_events(int fd, int *wd, int argc, char *argv[])
 {
     /* Some systems cannot read integer variables if they are not
        prlinuxoperly aligned. On other systems, incorrect alignment may
@@ -114,7 +113,7 @@ int init_monitoring(int argc, char *argv[])
        - file was opened
        - file was closed */
 
-    for (i = 1; i < argc; i++)
+    for (i = 0; i < argc; i++)
     {
         wd[i] = inotify_add_watch(fd, argv[i],
                                   IN_OPEN | IN_CLOSE);

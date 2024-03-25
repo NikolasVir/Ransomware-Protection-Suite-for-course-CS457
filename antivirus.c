@@ -134,20 +134,20 @@ void init_file_table(const char *dir_path)
 int main(int argc, char *argv[])
 {
     check_arguments(argc, argv);
+    init_file_table(argv[2]);
 
     switch (mode)
     {
     case SCAN:
-        init_file_table(argv[2]);
         check_files();
         break;
     case INSPECT:
-        init_file_table(argv[2]);
         printf("Suspected Websites Links:\n");
         extract_from_files();
         break;
     case MONITOR:
         printf("MONITOR\n");
+        init_monitoring(file_table_size, file_table);
         break;
     }
 }
