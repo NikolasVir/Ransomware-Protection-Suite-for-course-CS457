@@ -104,6 +104,18 @@ void print_directory_table()
     }
 }
 
+// The program will use a logfile to log all captured events.
+//  This ill be used as storage to check if there has been a ransomware attack.
+void append_log_file(const char *event)
+{
+    FILE *log = fopen("activity.log", "a");
+    if (!log)
+    {
+        fprintf(stderr, "Could not open file %s\n", "activity.log");
+        exit(-5);
+    }
+}
+
 static void handle_events(int fd, int *wd, int argc, char *argv[])
 {
     /* Some systems cannot read integer variables if they are not
@@ -149,19 +161,33 @@ static void handle_events(int fd, int *wd, int argc, char *argv[])
             /* Print event type. */
 
             if (event->mask & IN_OPEN)
+            {
                 printf("IN_OPEN: ");
+            }
             if (event->mask & IN_ACCESS)
+            {
                 printf("IN_ACCESS: ");
+            }
             if (event->mask & IN_CREATE)
+            {
                 printf("IN_CREATE: ");
+            }
             if (event->mask & IN_MODIFY)
+            {
                 printf("IN_MODIFY: ");
+            }
             if (event->mask & IN_CLOSE_WRITE)
+            {
                 printf("IN_CLOSE_WRITE: ");
+            }
             if (event->mask & IN_CLOSE_NOWRITE)
+            {
                 printf("IN_CLOSE_NOWRITE: ");
+            }
             if (event->mask & IN_DELETE_SELF)
+            {
                 printf("IN_DELETE_SELF: ");
+            }
             /* Print the name of the watched directory. */
 
             for (size_t i = 1; i < argc; ++i)
