@@ -2,6 +2,17 @@ Nikolas Virnitzakis, csd4606
 
 "testdirectory" includes files and subdirectories to test "scan" and "inspect". Can also be used for "monitor"
 
+Make:
+    make all: generated antivirus, dummy ransomware and unransomware
+    antivirus usage:
+        as described in the assignment
+    ransomware usage:
+        ./ransomware.out <filepath>: deletes original file and replaces it with .locked
+    unransomware usage:
+        ./unransomware.out <filepath>: deletes .locked file and replaces it with original one
+
+    Note: no encryption/decryption is involved for ransomware and unransomware. 
+
 Notes:
     1. Max path size is 2048
     2. 
