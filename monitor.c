@@ -106,13 +106,92 @@ void print_directory_table()
 
 // The program will use a logfile to log all captured events.
 //  This ill be used as storage to check if there has been a ransomware attack.
-void append_log_file(const char *event)
+void append_log_file(const char *event, const char *file_name)
 {
     FILE *log = fopen("activity.log", "a");
     if (!log)
     {
         fprintf(stderr, "Could not open file %s\n", "activity.log");
         exit(-5);
+    }
+
+    fprintf(log, "%s,%s\n", event, file_name);
+
+    fclose(log);
+}
+
+// This function will check the log file for suspected behaviour (see README)
+void check_log_file(const char *file_name)
+{
+    char *locked_name = (char *)malloc((strlen(file_name) * sizeof(char)) + 10);
+    strcpy(locked_name, file_name);
+    strcat(locked_name, ".locked");
+
+    int original_opened = 0;
+    int original_accessed = 0;
+    int locked_created = 0;
+    int locked_modified = 0;
+    int locked_closed = 0;
+    int original_deleted = 0;
+
+    FILE *log = fopen("activity.log", "r");
+    if (!log)
+    {
+        fprintf(stderr, "Could not open file %s\n", "activity.log");
+        exit(-5);
+    }
+
+    char line[1128];
+    while (fgets(line, sizeof(line), log))
+    {
+        char *event_buffer = strtok(line, ",");
+        char *file_name_buffer = strtok(NULL, ",");
+        file_name_buffer[strlen(file_name_buffer) - 1] = '\0';
+        if (strcmp(file_name_buffer, file_name) == 0)
+        {
+            if (strcmp(event_buffer, "OPENED") == 0)
+            {
+                original_opened = 1;
+            }
+            if (strcmp(event_buffer, "ACCESSED") == 0)
+            {
+                original_accessed = 1;
+            }
+            if (strcmp(event_buffer, "DELETED") == 0)
+            {
+                original_deleted = 1;
+            }
+        }
+        if (strcmp(file_name_buffer, locked_name) == 0)
+        {
+            if (strcmp(event_buffer, "CREATED") == 0)
+            {
+                locked_created = 1;
+            }
+            if (strcmp(event_buffer, "MODIFIED") == 0)
+            {
+                locked_modified = 1;
+            }
+            if (strcmp(event_buffer, "CLOSED_WRITTEN") == 0)
+            {
+                locked_closed = 1;
+            }
+        }
+    }
+
+    if (original_opened &&
+        original_accessed &&
+        locked_created &&
+        locked_modified &&
+        locked_closed &&
+        original_deleted)
+    {
+        time_t t = time(NULL);
+        struct tm *tm = localtime(&t);
+        char *time_str = asctime(tm);
+        time_str[strlen(time_str) - 1] = '\0';
+        printf("\033[1;31m[%s][WARNING] Ransomware attack detected on file: %s\n", time_str, file_name);
+        printf("\033[0m");
     }
 }
 
@@ -159,34 +238,51 @@ static void handle_events(int fd, int *wd, int argc, char *argv[])
             event = (const struct inotify_event *)ptr;
 
             /* Print event type. */
-
-            if (event->mask & IN_OPEN)
+            if (!(event->mask & IN_ISDIR))
             {
-                printf("IN_OPEN: ");
-            }
-            if (event->mask & IN_ACCESS)
-            {
-                printf("IN_ACCESS: ");
-            }
-            if (event->mask & IN_CREATE)
-            {
-                printf("IN_CREATE: ");
-            }
-            if (event->mask & IN_MODIFY)
-            {
-                printf("IN_MODIFY: ");
-            }
-            if (event->mask & IN_CLOSE_WRITE)
-            {
-                printf("IN_CLOSE_WRITE: ");
-            }
-            if (event->mask & IN_CLOSE_NOWRITE)
-            {
-                printf("IN_CLOSE_NOWRITE: ");
-            }
-            if (event->mask & IN_DELETE_SELF)
-            {
-                printf("IN_DELETE_SELF: ");
+                if (event->mask & IN_OPEN)
+                {
+                    printf("OPENED: ");
+                    printf("%s\n", event->name);
+                    append_log_file("OPENED", event->name);
+                }
+                if (event->mask & IN_ACCESS)
+                {
+                    printf("ACCESSED: ");
+                    printf("%s\n", event->name);
+                    append_log_file("ACCESSED", event->name);
+                }
+                if (event->mask & IN_CREATE)
+                {
+                    printf("CREATED: ");
+                    printf("%s\n", event->name);
+                    append_log_file("CREATED", event->name);
+                }
+                if (event->mask & IN_MODIFY)
+                {
+                    printf("MODIFIED: ");
+                    printf("%s\n", event->name);
+                    append_log_file("MODIFIED", event->name);
+                }
+                if (event->mask & IN_CLOSE_WRITE)
+                {
+                    printf("CLOSED_WRITTEN: ");
+                    printf("%s\n", event->name);
+                    append_log_file("CLOSED_WRITTEN", event->name);
+                }
+                if (event->mask & IN_CLOSE_NOWRITE)
+                {
+                    printf("CLOSED_NOWRITTEN: ");
+                    printf("%s\n", event->name);
+                    append_log_file("CLOSED_NOWRITTEN", event->name);
+                }
+                if (event->mask & IN_DELETE)
+                {
+                    printf("DELETED: ");
+                    printf("%s\n", event->name);
+                    append_log_file("DELETED", event->name);
+                    check_log_file(strdup(event->name));
+                }
             }
             /* Print the name of the watched directory. */
 
@@ -198,18 +294,6 @@ static void handle_events(int fd, int *wd, int argc, char *argv[])
                     break;
                 }
             }
-
-            /* Print the name of the file. */
-
-            if (event->len)
-                printf("%s", event->name);
-
-            /* Print type of filesystem object. */
-
-            if (event->mask & IN_ISDIR)
-                printf(" [directory]\n");
-            else
-                printf(" [file]\n");
         }
     }
 }
@@ -221,6 +305,8 @@ int init_monitoring(int argc, char *argv[])
     int *wd;
     nfds_t nfds;
     struct pollfd fds[2];
+
+    remove("activity.log"); // If already exists (from previous run), delete it
 
     printf("Press ENTER key to terminate.\n");
 
@@ -249,7 +335,7 @@ int init_monitoring(int argc, char *argv[])
     for (i = 0; i < argc; i++)
     {
         wd[i] = inotify_add_watch(fd, argv[i],
-                                  IN_OPEN | IN_ACCESS | IN_CREATE | IN_MODIFY | IN_CLOSE | IN_DELETE_SELF);
+                                  IN_OPEN | IN_ACCESS | IN_CREATE | IN_MODIFY | IN_CLOSE | IN_DELETE);
         if (wd[i] == -1)
         {
             fprintf(stderr, "Cannot watch '%s': %s\n",
@@ -269,8 +355,12 @@ int init_monitoring(int argc, char *argv[])
     fds[1].events = POLLIN;
 
     /* Wait for events and/or terminal input. */
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    char *time_str = asctime(tm);
+    time_str[strlen(time_str) - 1] = '\0';
+    printf("[%s] Listening for events:\n", time_str);
 
-    printf("Listening for events.\n");
     while (1)
     {
         poll_num = poll(fds, nfds, -1);
