@@ -16,7 +16,7 @@ static void
 handle_events(int fd, int *wd, int argc, char *argv[])
 {
     /* Some systems cannot read integer variables if they are not
-       properly aligned. On other systems, incorrect alignment may
+       prlinuxoperly aligned. On other systems, incorrect alignment may
        decrease performance. Hence, the buffer used for reading from
        the inotify file descriptor should have the same alignment as
        struct inotify_event. */

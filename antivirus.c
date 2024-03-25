@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +9,10 @@
 #include <ctype.h>
 #include <regex.h>
 #include <curl/curl.h>
+#include <sys/inotify.h>
+#include <unistd.h>
+#include <errno.h>
+#include <poll.h>
 
 char **file_table;
 int file_table_size;
