@@ -5,7 +5,7 @@ Nikolas Virnitzakis, csd4606
 Make:
     make all: generated antivirus, dummy ransomware and unransomware
     antivirus usage:
-        as described in the assignment
+        as described in the assignment (loot at "Notes" below)
     ransomware usage:
         ./ransomware.out <filepath>: deletes original file and replaces it with .locked
     unransomware usage:
