@@ -1,6 +1,7 @@
 Nikolas Virnitzakis, csd4606
 
-"testdirectory" includes files and subdirectories to test "scan" and "inspect". Can also be used for "monitor"
+"testdirectory" includes files and subdirectories to test "scan" and "inspect". 
+"ransomtestdiretory" is for ransom testing (in order to not damage "malware files" above)
 
 Make:
     make all: generated antivirus, dummy ransomware and unransomware

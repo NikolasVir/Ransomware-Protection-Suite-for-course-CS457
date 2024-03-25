@@ -148,7 +148,6 @@ int main(int argc, char *argv[])
         break;
     case MONITOR:
         init_directory_table(argv[2]);
-        print_directory_table();
         init_monitoring(directory_table_size, directory_table);
         break;
     }

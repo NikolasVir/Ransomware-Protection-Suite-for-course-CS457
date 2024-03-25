@@ -7,7 +7,6 @@ void count_directories(const char *dir_path)
     struct dirent *entry;
     struct stat fileStat;
 
-    // Open directory
     dir = opendir(dir_path);
     if (dir == NULL)
     {
@@ -15,8 +14,7 @@ void count_directories(const char *dir_path)
         return;
     }
 
-    // Print the current directory
-    printf("%s\n", dir_path);
+    // Increment directory_table_size
     directory_table_size++;
     // Traverse directory
     while ((entry = readdir(dir)) != NULL)
@@ -60,10 +58,9 @@ void add_directories(const char *dir_path, int index)
         return;
     }
 
-    // Print the current directory
-    printf("%s\n", dir_path);
+    // Add the current directory
     directory_table[index] = strdup(dir_path);
-    
+
     // Traverse directory
     while ((entry = readdir(dir)) != NULL)
     {
