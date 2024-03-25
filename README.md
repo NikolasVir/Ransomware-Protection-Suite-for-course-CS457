@@ -10,4 +10,6 @@ Notes:
         sudo apt-get install libcurl4-openssl-dev
     5. Inspector inspects every string of format:
         something.somehing_else
-    6. Monitor implementation is an adjusted version of the man example.
+    6. Monitor implementation is an adjusted version of the "man" example.
+    7. Ransomware assumed behaviour: (this is when the program will flag behaviour as a ransomware attack)
+        open(original)->access(original)->create(.locked)->modify(.locked)->close(.locked)->delete(original)
