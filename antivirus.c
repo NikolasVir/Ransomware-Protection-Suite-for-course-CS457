@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <poll.h>
+#include <sys/stat.h>
 
 char **file_table;
 int file_table_size;
@@ -146,7 +147,9 @@ int main(int argc, char *argv[])
         extract_from_files();
         break;
     case MONITOR:
-        init_monitoring(file_table_size, file_table);
+        init_directory_table(argv[2]);
+        print_directory_table();
+        init_monitoring(directory_table_size, directory_table);
         break;
     }
 }

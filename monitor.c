@@ -1,3 +1,112 @@
+char **directory_table;
+int directory_table_size;
+
+void count_directories(const char *dir_path)
+{
+    DIR *dir;
+    struct dirent *entry;
+    struct stat fileStat;
+
+    // Open directory
+    dir = opendir(dir_path);
+    if (dir == NULL)
+    {
+        fprintf(stderr, "Cannot open directory '%s'\n", dir_path);
+        return;
+    }
+
+    // Print the current directory
+    printf("%s\n", dir_path);
+    directory_table_size++;
+    // Traverse directory
+    while ((entry = readdir(dir)) != NULL)
+    {
+        char fullpath[1024];
+        snprintf(fullpath, sizeof(fullpath), "%s/%s", dir_path, entry->d_name);
+
+        // Ignore current and parent directory entries
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
+
+        // Get file status
+        if (lstat(fullpath, &fileStat) < 0)
+        {
+            fprintf(stderr, "Cannot stat file '%s'\n", fullpath);
+            continue;
+        }
+
+        // Check if it's a directory
+        if (S_ISDIR(fileStat.st_mode))
+        {
+            // Recursively list directories
+            count_directories(fullpath);
+        }
+    }
+
+    closedir(dir);
+}
+
+void add_directories(const char *dir_path, int index)
+{
+    DIR *dir;
+    struct dirent *entry;
+    struct stat fileStat;
+
+    // Open directory
+    dir = opendir(dir_path);
+    if (dir == NULL)
+    {
+        fprintf(stderr, "Cannot open directory '%s'\n", dir_path);
+        return;
+    }
+
+    // Print the current directory
+    printf("%s\n", dir_path);
+    directory_table[index] = strdup(dir_path);
+    
+    // Traverse directory
+    while ((entry = readdir(dir)) != NULL)
+    {
+        char fullpath[1024];
+        snprintf(fullpath, sizeof(fullpath), "%s/%s", dir_path, entry->d_name);
+
+        // Ignore current and parent directory entries
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
+
+        // Get file status
+        if (lstat(fullpath, &fileStat) < 0)
+        {
+            fprintf(stderr, "Cannot stat file '%s'\n", fullpath);
+            continue;
+        }
+
+        // Check if it's a directory
+        if (S_ISDIR(fileStat.st_mode))
+        {
+            // Recursively list directories
+            add_directories(fullpath, index + 1);
+        }
+    }
+
+    closedir(dir);
+}
+
+void init_directory_table(const char *dir_path)
+{
+    count_directories(dir_path);
+    directory_table = (char **)malloc(directory_table_size * sizeof(char *));
+    add_directories(dir_path, 0);
+}
+
+void print_directory_table()
+{
+    for (int i = 0; i < directory_table_size; i++)
+    {
+        printf("%d. %s\n", i, directory_table[i]);
+    }
+}
+
 static void handle_events(int fd, int *wd, int argc, char *argv[])
 {
     /* Some systems cannot read integer variables if they are not

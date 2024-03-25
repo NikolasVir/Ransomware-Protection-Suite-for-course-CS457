@@ -24,3 +24,7 @@ Notes:
     6. Monitor implementation is an adjusted version of the "man" example.
     7. Ransomware assumed behaviour: (this is when the program will flag behaviour as a ransomware attack)
         open(original)->access(original)->create(.locked)->modify(.locked)->close(.locked)->delete(original)
+    8. The watchlist of the inotify would normally just be all the "unlocked" files. If a file gets locked, it is no longer on the wishlist. 
+        Solutions: 
+            1. Make it so it watches the directory instead of the files (would require major rewrite), or
+            2.  ...
