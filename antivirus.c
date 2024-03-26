@@ -26,6 +26,8 @@ uint8_t SIGNATURE[] = {0x98, 0x1d, 0x00, 0x00, 0xec, 0x33, 0xff, 0xff, 0xfb, 0x0
 #include "scanner.c"
 #include "inspector.c"
 #include "monitor.c"
+#include "slicer.c"
+#include "unlocker.c"
 
 typedef enum
 {
@@ -159,9 +161,23 @@ int main(int argc, char *argv[])
         break;
     case SLICE:
         printf("SLICE:\n");
+        double c;
+        sscanf(argv[2], "%lf", &c);
+        generate_random_polynomial_and_points(c);
         break;
     case UNLOCK:
         printf("UNLOCK:\n");
+        double ca, cb, cc;
+        double x1, y1, x2, y2, x3, y3;
+        sscanf(argv[2], "%lf", &x1);
+        sscanf(argv[3], "%lf", &y1);
+        sscanf(argv[4], "%lf", &x2);
+        sscanf(argv[5], "%lf", &y2);
+        sscanf(argv[6], "%lf", &x3);
+        sscanf(argv[7], "%lf", &y3);
+        // calculate_coefficients(x1, y2, x2, y2, x3, y3, &ca, &cb, &cc);
+        calculate_coefficients(x1, y1, x2, y2, x3, y3, &ca, &cb, &cc);
+        printf("The coefficients are: a = %f, b = %f, c = %f\n", ca, cb, cc);
         break;
     }
 }

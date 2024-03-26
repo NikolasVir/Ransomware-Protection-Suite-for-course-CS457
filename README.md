@@ -25,3 +25,5 @@ Notes:
     6. Monitor implementation is an adjusted version of the "man" example.
     7. Ransomware assumed behaviour: (this is when the program will flag behaviour as a ransomware attack)
         open(original)->access(original)->create(.locked)->modify(.locked)->close(.locked)->delete(original)
+    8. Unlocker: ./antivirus.out unlock x1 y1 x2 y2 x3 y3
+    9. Unlocker is not 100% precise. For example: if c = 5, after unlocking, it might result 5.004262 etc.
