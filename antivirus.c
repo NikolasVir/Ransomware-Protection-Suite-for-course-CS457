@@ -31,7 +31,9 @@ typedef enum
 {
     SCAN,
     INSPECT,
-    MONITOR
+    MONITOR,
+    SLICE,
+    UNLOCK
 } Mode;
 
 Mode mode;
@@ -41,10 +43,7 @@ void check_arguments(int argc, char **argv)
 {
     if (argc < 2)
     {
-        fprintf(stderr, "Invalid argument. Use: \n \
-        scan \n \
-        \n \
-        \n");
+        fprintf(stderr, "Invalid argument.\n");
         exit(1);
     }
     if (strcmp(argv[1], "scan") == 0)
@@ -58,6 +57,14 @@ void check_arguments(int argc, char **argv)
     if (strcmp(argv[1], "monitor") == 0)
     {
         mode = MONITOR;
+    }
+    if (strcmp(argv[1], "slice") == 0)
+    {
+        mode = SLICE;
+    }
+    if (strcmp(argv[1], "unlock") == 0)
+    {
+        mode = UNLOCK;
     }
 }
 
@@ -135,20 +142,26 @@ void init_file_table(const char *dir_path)
 int main(int argc, char *argv[])
 {
     check_arguments(argc, argv);
-    init_file_table(argv[2]);
-
     switch (mode)
     {
     case SCAN:
+        init_file_table(argv[2]);
         check_files();
         break;
     case INSPECT:
+        init_file_table(argv[2]);
         printf("Suspected Websites Links:\n");
         extract_from_files();
         break;
     case MONITOR:
         init_directory_table(argv[2]);
         init_monitoring(directory_table_size, directory_table);
+        break;
+    case SLICE:
+        printf("SLICE:\n");
+        break;
+    case UNLOCK:
+        printf("UNLOCK:\n");
         break;
     }
 }
