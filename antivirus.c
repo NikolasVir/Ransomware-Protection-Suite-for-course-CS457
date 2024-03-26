@@ -143,6 +143,9 @@ void init_file_table(const char *dir_path)
 
 int main(int argc, char *argv[])
 {
+    double c;
+    double ca, cb, cc;
+    double x1, y1, x2, y2, x3, y3;
     check_arguments(argc, argv);
     switch (mode)
     {
@@ -160,24 +163,18 @@ int main(int argc, char *argv[])
         init_monitoring(directory_table_size, directory_table);
         break;
     case SLICE:
-        printf("SLICE:\n");
-        double c;
         sscanf(argv[2], "%lf", &c);
         generate_random_polynomial_and_points(c);
         break;
     case UNLOCK:
-        printf("UNLOCK:\n");
-        double ca, cb, cc;
-        double x1, y1, x2, y2, x3, y3;
         sscanf(argv[2], "%lf", &x1);
         sscanf(argv[3], "%lf", &y1);
         sscanf(argv[4], "%lf", &x2);
         sscanf(argv[5], "%lf", &y2);
         sscanf(argv[6], "%lf", &x3);
         sscanf(argv[7], "%lf", &y3);
-        // calculate_coefficients(x1, y2, x2, y2, x3, y3, &ca, &cb, &cc);
         calculate_coefficients(x1, y1, x2, y2, x3, y3, &ca, &cb, &cc);
-        printf("The coefficients are: a = %f, b = %f, c = %f\n", ca, cb, cc);
+        printf("Key is: %lf\n", cc);
         break;
     }
 }
