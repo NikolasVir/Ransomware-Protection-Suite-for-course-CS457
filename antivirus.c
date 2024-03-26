@@ -26,12 +26,16 @@ uint8_t SIGNATURE[] = {0x98, 0x1d, 0x00, 0x00, 0xec, 0x33, 0xff, 0xff, 0xfb, 0x0
 #include "scanner.c"
 #include "inspector.c"
 #include "monitor.c"
+#include "slicer.c"
+#include "unlocker.c"
 
 typedef enum
 {
     SCAN,
     INSPECT,
-    MONITOR
+    MONITOR,
+    SLICE,
+    UNLOCK
 } Mode;
 
 Mode mode;
@@ -41,10 +45,7 @@ void check_arguments(int argc, char **argv)
 {
     if (argc < 2)
     {
-        fprintf(stderr, "Invalid argument. Use: \n \
-        scan \n \
-        \n \
-        \n");
+        fprintf(stderr, "Invalid argument.\n");
         exit(1);
     }
     if (strcmp(argv[1], "scan") == 0)
@@ -58,6 +59,14 @@ void check_arguments(int argc, char **argv)
     if (strcmp(argv[1], "monitor") == 0)
     {
         mode = MONITOR;
+    }
+    if (strcmp(argv[1], "slice") == 0)
+    {
+        mode = SLICE;
+    }
+    if (strcmp(argv[1], "unlock") == 0)
+    {
+        mode = UNLOCK;
     }
 }
 
@@ -135,20 +144,40 @@ void init_file_table(const char *dir_path)
 int main(int argc, char *argv[])
 {
     check_arguments(argc, argv);
-    init_file_table(argv[2]);
-
     switch (mode)
     {
     case SCAN:
+        init_file_table(argv[2]);
         check_files();
         break;
     case INSPECT:
+        init_file_table(argv[2]);
         printf("Suspected Websites Links:\n");
         extract_from_files();
         break;
     case MONITOR:
         init_directory_table(argv[2]);
         init_monitoring(directory_table_size, directory_table);
+        break;
+    case SLICE:
+        printf("SLICE:\n");
+        double c;
+        sscanf(argv[2], "%lf", &c);
+        generate_random_polynomial_and_points(c);
+        break;
+    case UNLOCK:
+        printf("UNLOCK:\n");
+        double ca, cb, cc;
+        double x1, y1, x2, y2, x3, y3;
+        sscanf(argv[2], "%lf", &x1);
+        sscanf(argv[3], "%lf", &y1);
+        sscanf(argv[4], "%lf", &x2);
+        sscanf(argv[5], "%lf", &y2);
+        sscanf(argv[6], "%lf", &x3);
+        sscanf(argv[7], "%lf", &y3);
+        // calculate_coefficients(x1, y2, x2, y2, x3, y3, &ca, &cb, &cc);
+        calculate_coefficients(x1, y1, x2, y2, x3, y3, &ca, &cb, &cc);
+        printf("The coefficients are: a = %f, b = %f, c = %f\n", ca, cb, cc);
         break;
     }
 }
