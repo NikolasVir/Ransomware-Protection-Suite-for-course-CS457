@@ -16,7 +16,7 @@ Make:
 
 Notes:
     1. Max path size is 2048
-    2. 
+    2. Could not make files with corresponding md5 and sha256 hashes
     3. Max character size for string in URL inspection is 1024
     4. I needed to install curl with:
         sudo apt-get install libcurl4-openssl-dev
