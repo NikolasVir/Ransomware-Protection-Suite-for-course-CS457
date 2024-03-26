@@ -1,0 +1,9 @@
+rule KozaliBear
+{
+    strings:
+        $string = "bc1qa5wkgaew2dkv56kfvj49j0av5nml45x9ek9hz6"
+        $signature = { 98 1d 00 00 ec 33 ff ff fb 06 00 00 00 46 0e 10 }
+
+    condition:
+        hash.md5(file) == "feba6c919e3797e7778e8f2e85fa033d" or hash.sha256(file) == "d56d67f2c43411d966525b3250bfaa1a85db34bf371468df1b6a9882fee78849" or $string or $signature
+}
