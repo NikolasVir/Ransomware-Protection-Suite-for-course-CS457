@@ -51,3 +51,5 @@ Note: no encryption/decryption is involved for ransomware and unransomware.
     Key is: 5.014912
     nikolasvir@nikolasvir-SATELLITE-C50-B:~/cs457_series2_4606$
     ```
+    ## Ransomware Attack Demo
+    ![til](./GIFS/RANSOM_PRESENTATION.gif)
