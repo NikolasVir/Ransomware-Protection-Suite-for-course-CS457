@@ -1,8 +1,8 @@
 This project was for an assignment for course CS457-Introduction to Security Systems
 
-# Nikolas Virintzakis, csd4606
+# Nikolas Virintzakis
 
-**testdirectory** includes files and subdirectories to test **scan** and **inspect**. **ransomtestdiretory** is for ransom testing (in order to not damage **malware files** above).
+**testdirectory** includes files and subdirectories to test **scan** and **inspect**. **ransomtestdiretory** is for ransom testing (in order to not damage **malware files**).
 
 ## Make
 - `make all`: generated antivirus, dummy ransomware, and unransomware.
@@ -51,6 +51,3 @@ Note: no encryption/decryption is involved for ransomware and unransomware.
     Key is: 5.014912
     nikolasvir@nikolasvir-SATELLITE-C50-B:~/cs457_series2_4606$
     ```
-```
-
-This markdown formatting should make your README.md file on GitHub more readable with proper headers, bullet points, and code blocks.
