@@ -1,4 +1,4 @@
-This project was for an assignment for course CS457-Introduction to Security Systems
+This project was for an assignment for course CS457-Introduction to Security Systems. The details for this assignment can be found in the "assignment_2_2024_en.pdf" file.
 
 # Nikolas Virintzakis
 
