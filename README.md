@@ -1,4 +1,4 @@
-Nikolas Virnitzakis, csd4606
+Nikolas Virintzakis, csd4606
 
 "testdirectory" includes files and subdirectories to test "scan" and "inspect". 
 "ransomtestdiretory" is for ransom testing (in order to not damage "malware files" above)
@@ -43,4 +43,4 @@ Notes:
     Point 10: (-4.580294, 16613.226016)
     nikolasvir@nikolasvir-SATELLITE-C50-B:~/cs457_series2_4606$ ./antivirus.out unlock 4.503350 20884.099958 -9.194094 71927.387724 3.490555 12972.845841
     Key is: 5.014912
-    nikolasvir@nikolasvir-SATELLITE-C50-B:~/cs457_series2_4606$ 
+    nikolasvir@nikolasvir-SATELLITE-C50-B:~/cs457_series2_4606$
